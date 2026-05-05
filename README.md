@@ -62,6 +62,10 @@ CONTAINER_PORT=9090 HOST_PATH=/mnt/data docker compose up -d
 
 ---
 
-## Licence
+<div align="center">
 
-MIT — voir [LICENSE](LICENSE).
+Fait avec soin par **Liam** - License MIT — voir [LICENSE](LICENSE)
+
+[![Follow on X](https://img.shields.io/badge/Follow-%40Liamdbav-000000?style=flat-square&logo=x&logoColor=white)](https://x.com/Liamdbav)
+
+</div>
