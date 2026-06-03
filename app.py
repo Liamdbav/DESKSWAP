@@ -373,6 +373,30 @@ def system_metrics():
     try:
         disk   = psutil.disk_usage(ROOT_PATH)
         memory = psutil.virtual_memory()
+
+        temps_data = {'available': False, 'sensors': []}
+        try:
+            raw = psutil.sensors_temperatures()
+            if raw:
+                all_readings = []
+                for chip, readings in raw.items():
+                    for r in readings:
+                        all_readings.append({
+                            'chip':     chip,
+                            'label':    r.label or chip,
+                            'current':  r.current,
+                            'high':     r.high,
+                            'critical': r.critical,
+                        })
+                if all_readings:
+                    temps_data = {
+                        'available': True,
+                        'sensors':   all_readings,
+                        'max':       max(all_readings, key=lambda x: x['current']),
+                    }
+        except (AttributeError, Exception):
+            pass
+
         return jsonify({
             'disk': {
                 'used':    disk.used  / (1024 ** 3),
@@ -385,7 +409,8 @@ def system_metrics():
                 'total':   memory.total / (1024 ** 3),
                 'percent': memory.percent,
             },
-            'cpu': {'percent': psutil.cpu_percent(interval=0.1)},
+            'cpu':  {'percent': psutil.cpu_percent(interval=0.1)},
+            'temps': temps_data,
         })
     except Exception:
         app.logger.exception('Metrics error')
